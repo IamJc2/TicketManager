@@ -1,0 +1,13 @@
+# Ignorar dependencias (Vital)
+node_modules/
+*/node_modules/
+
+# Ignorar variables de entorno (Seguridad)
+.env
+*/.env
+
+# Archivos de sistema y build
+.DS_Store
+dist/
+build/
+.vscode/
