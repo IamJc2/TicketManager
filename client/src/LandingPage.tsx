@@ -11,7 +11,7 @@ function LandingPage() {
       </p>
       
       <div style={{ marginTop: '30px' }}>
-        <Link to="/dashboard">
+        <Link to="/login">
           <button style={{
             padding: '15px 30px',
             fontSize: '1rem',

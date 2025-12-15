@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react'; // <--- ¡ESTA ERA LA QUE FALTABA!
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './LandingPage';
+import Login from './Login'; 
 
+// --- Interfaces y Componente Dashboard 
 interface Ticket {
   ID_Ticket: number;
   Titulo: string;
@@ -28,34 +30,34 @@ function Dashboard() {
 
   return (
     <div className="container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1>🎫 Dashboard de Incidencias</h1>
-        <a href="/" style={{ color: '#61dafb', textDecoration: 'none' }}>⬅ Volver al Inicio</a>
+        <a href="/" style={{ textDecoration: 'none', color: '#61dafb', border: '1px solid #61dafb', padding: '5px 10px', borderRadius: '4px' }}>
+          ⬅ Cerrar Sesión
+        </a>
       </div>
       <p>Sistema conectado a SQL Server v.2022</p>
       
       <div className="ticket-list">
-        {tickets.length === 0 ? (
-            <p>Cargando tickets...</p>
-        ) : (
-            tickets.map((ticket) => (
-              <div key={ticket.ID_Ticket} className="card">
-                <h3>{ticket.Titulo} <small>({ticket.Prioridad})</small></h3>
-                <p>{ticket.Descripcion}</p>
-                <span>Estado: <strong>{ticket.Estado}</strong></span>
-              </div>
-            ))
-        )}
+        {tickets.map((ticket) => (
+          <div key={ticket.ID_Ticket} className="card">
+            <h3>{ticket.Titulo} <small>({ticket.Prioridad})</small></h3>
+            <p>{ticket.Descripcion}</p>
+            <span>Estado: <strong>{ticket.Estado}</strong></span>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
+// --- App Principal ---
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

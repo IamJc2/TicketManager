@@ -5,11 +5,9 @@ require('dotenv').config();
 
 const app = express();
 
-// Middlewares (Para que el servidor entienda JSON y permita conexiones)
 app.use(express.json());
 app.use(cors());
 
-// Configuración de la Base de Datos
 const dbSettings = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -21,7 +19,7 @@ const dbSettings = {
     }
 };
 
-// Conexión a la Base de Datos y arranque del servidor
+// Conexión a la Base de Datos
 app.listen(process.env.PORT, async () => {
     try {
         const pool = await sql.connect(dbSettings);
@@ -32,7 +30,7 @@ app.listen(process.env.PORT, async () => {
     }
 });
 
-// --- RUTAS (ENDPOINTS) ---
+// RUTAS ENDPOINTS
 
 // 1. Obtener todos los tickets (GET)
 app.get('/tickets', async (req, res) => {
@@ -61,5 +59,41 @@ app.post('/tickets', async (req, res) => {
         res.json({ message: 'Ticket creado correctamente' });
     } catch (error) {
         res.status(500).send(error.message);
+    }
+});
+
+// 3. Login de usuario (POST)
+app.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const pool = await sql.connect(dbSettings);
+
+        const result = await pool.request()
+            .input('email', sql.VarChar, email)
+            .query('SELECT * FROM Usuarios WHERE Email = @email');
+
+        if (result.recordset.length === 0) {
+            return res.status(401).json({ message: 'Usuario no encontrado' });
+        }
+
+        const usuario = result.recordset[0];
+
+        if (usuario.Password !== password) {
+            return res.status(401).json({ message: 'Contraseña incorrecta' });
+        }
+
+        res.json({
+            message: 'Login exitoso',
+            usuario: {
+                id: usuario.ID_Usuario,
+                nombre: usuario.Nombre,
+                email: usuario.Email,
+                rol: usuario.Rol
+            }
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error en el servidor');
     }
 });
